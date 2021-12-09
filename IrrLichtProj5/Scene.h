@@ -3,17 +3,18 @@
 #include <irrlicht.h>
 #include <Windows.h>
 
-class CScene
+#include "General.h"
+
+class CScene : public IScene
 {
 public:
 
     CScene();
     ~CScene();
 
-    bool initialise(HWND hwnd);
-    void uninitialise();
-    bool run();
-    void setSize(int width, int height);
+    virtual bool initialise(HWND hwnd);
+    virtual void uninitialise();
+    virtual bool run();
 
 private:
 

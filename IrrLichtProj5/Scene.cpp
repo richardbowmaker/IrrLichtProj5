@@ -1,8 +1,10 @@
 
+#include <irrlicht.h>
+#include <Windows.h>
+
+#include "General.h"
 #include "Scene.h"
 
-
-//CScene::CScene() : initialised_(false), driverType_(irr::video::EDT_OPENGL), videodata_(0)
 CScene::CScene() : initialised_(false), driverType_(irr::video::EDT_DIRECT3D9), videodata_(0)
 {
 
@@ -84,10 +86,4 @@ bool CScene::run()
         driver_->endScene();
     }
     return true;
-}
-
-void CScene::setSize(int width, int height)
-{
-    if (!initialised_) return;
-    driver_->OnResize(irr::core::dimension2du(width, height));
 }

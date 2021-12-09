@@ -1,19 +1,20 @@
 // wxWidgets "Hello world" Program
 // For compilers that support precompilation, includes "wx/wx.h".
 
+
+//#include <memory>
+#include <irrlicht.h>
 #include <wx/wx.h>
-//#include <irrlicht.h>
 
 #include "Main.h"
-
-using namespace irr;
+#include "Scene.h"
+//#include "SolarSystemScene.h"
 
 class MyApp: public wxApp
 {
 public:
     virtual bool OnInit();
 };
-
 
 wxIMPLEMENT_APP(MyApp);
 
@@ -67,44 +68,41 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     Bind(wxEVT_IDLE, &MyFrame::OnIdle, this);
     Bind(wxEVT_MENU, &MyFrame::OnMenu, this);
 
-    userData1_ = new CUserEventData(panel1_, &scene1_);
-    userData2_ = new CUserEventData(panel2_, &scene2_);
+ /*   userData1_ = std::make_unique<CUserEventData>(panel1_);
+    userData2_ = std::make_unique<CUserEventData>(panel2_);
 
-    panel1_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, userData1_);
-    panel2_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, userData2_);
+    panel1_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, userData1_.get()); 
+    panel2_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, userData2_.get()); 
 
-    scene1_.initialise(panel1_->GetHWND());
-    scene2_.initialise(panel2_->GetHWND());
+    scene1_ = std::make_unique<CScene>();
+    scene2_ = std::make_unique<CScene>();
+
+    scene1_->initialise(panel1_->GetHWND());
+    scene2_->initialise(panel2_->GetHWND());*/
 }
 
 void MyFrame::OnSize(wxSizeEvent& event)
 {
-
-    CUserEventData *data = (CUserEventData*)event.GetEventUserData();
+    wxPanel *panel = static_cast<CUserEventData*>(event.GetEventUserData())->panel_;
     int width, height;
 
-    data->panel_->GetClientSize(&width, &height);
-
-
+    // keep aspect ratio 1:1
+    panel->GetClientSize(&width, &height);
     int s = std::min(width, height);
+    panel->SetClientSize(s, s);
 
-    data->panel_->SetClientSize(s, s);
-
-
-    //::PostMessage(data->panel_->GetHWND(), WM_SIZE, 0, (DWORD)(s << 16 | s));
-
-    //data->scene_->setSize(s, s);
     event.Skip();
-
 }
 
 void MyFrame::OnIdle(wxIdleEvent& event)
 {
-    bool b1 = scene1_.run();
-    bool b2 = scene2_.run();
+ /*   bool b1 = scene1_->run();
+    bool b2 = scene2_->run();
 
     if (b1 || b2)
         event.RequestMore(true);
+    else
+        this->Close();*/
 }
 
 void MyFrame::OnMenu(wxCommandEvent& event)
@@ -122,11 +120,9 @@ void MyFrame::OnMenu(wxCommandEvent& event)
 
 void MyFrame::OnExit(wxCommandEvent& event)
 {
-    scene1_.uninitialise();
-    scene2_.uninitialise();
-    delete userData1_;
-    delete userData2_;
-    Close( true );
+    //scene1_->uninitialise();
+    //scene2_->uninitialise();
+    //Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& event)

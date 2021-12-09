@@ -151,12 +151,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Anim1.cpp" />
+    <ClCompile Include="General.cpp" />
+    <ClCompile Include="SolarSystemScene.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Anim1.h" />
+    <ClInclude Include="General.h" />
+    <ClInclude Include="SolarSystemScene.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Main.h" />
   </ItemGroup>

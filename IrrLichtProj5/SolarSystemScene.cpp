@@ -2,9 +2,10 @@
 #include <irrlicht.h>
 #include <Windows.h>
 
+#include "General.h"
 #include "SolarSystemScene.h"
 
-CSolarSystemScene::CSolarSystemScene() : initialised_(false), driverType_(irr::video::EDT_DIRECT3D9), videodata_(0)
+CSolarSystemScene::CSolarSystemScene() : initialised_(false), driverType_(irr::video::EDT_DIRECT3D9), videodata_(0), timer_(2500.0)
 {
 
 }
@@ -14,15 +15,13 @@ CSolarSystemScene::~CSolarSystemScene()
 
 }
 
-
-/// <summary>
-/// /
-/// </summary>
-/// <param name="hwnd"></param>
-/// <returns></returns>
-
 bool CSolarSystemScene::initialise(HWND hwnd)
 {
+    const float earth_dist = 50.0f;
+    const float earth_radius = 3.0f;
+    const float moon_dist = 10.0f;
+    const float moon_radius = 1.0f;
+
     hWnd_ = hwnd;
 
     irr::SIrrlichtCreationParameters param;
@@ -35,42 +34,83 @@ bool CSolarSystemScene::initialise(HWND hwnd)
     smgr_ = device_->getSceneManager();
     driver_ = device_->getVideoDriver();
 
-    HDC HDc=GetDC(hWnd_);
-    PIXELFORMATDESCRIPTOR pfd={0};
-    pfd.nSize=sizeof(PIXELFORMATDESCRIPTOR);
-    int pf = GetPixelFormat(HDc);
-    DescribePixelFormat(HDc, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
-    pfd.dwFlags |= PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW;
-    pfd.cDepthBits=16;
-    pf = ChoosePixelFormat(HDc, &pfd);
-    SetPixelFormat(HDc, pf, &pfd);
-    videodata_.OpenGLWin32.HDc = HDc;
-    videodata_.OpenGLWin32.HRc=wglCreateContext(HDc);
-    wglShareLists((HGLRC)driver_->getExposedVideoData().OpenGLWin32.HRc, (HGLRC)videodata_.OpenGLWin32.HRc);
+    irr::video::E_DRIVER_TYPE driverType = irr::video::EDT_DIRECT3D9;
 
-    irr::scene::ICameraSceneNode* cam = smgr_->addCameraSceneNode();
-    cam->setTarget(irr::core::vector3df(0,0,0));
+    // create device
+    if (device_ == 0)
+        return false; // could not create selected driver.
 
-    irr::scene::ISceneNodeAnimator* anim =
-        smgr_->createFlyCircleAnimator(irr::core::vector3df(0,15,0), 30.0f);
-    cam->addAnimator(anim);
-    anim->drop();
+    driver_ = device_->getVideoDriver();
+    smgr_   = device_->getSceneManager();
 
-    irr::scene::ISceneNode* cube = smgr_->addCubeSceneNode(20);
+    // add centre solar system
+    centre_ = smgr_->addEmptySceneNode();
+    if (centre_)
+        centre_->setPosition(irr::core::vector3df(0, 0, 0));
 
-    cube->setMaterialTexture(0, driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\wall.bmp"));
-    cube->setMaterialTexture(1, driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\water.jpg"));
-    cube->setMaterialFlag(irr::video::EMF_LIGHTING, false );
-    cube->setMaterialType(irr::video::EMT_REFLECTION_2_LAYER );
+    // add sun
+    sun_ = smgr_->addSphereSceneNode(
+        3.0f,   // radius
+        100,    // no of polys
+        centre_);
 
-    smgr_->addSkyBoxSceneNode(
-        driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\irrlicht2_up.jpg"),
-        driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\irrlicht2_dn.jpg"),
-        driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\irrlicht2_lf.jpg"),
-        driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\irrlicht2_rt.jpg"),
-        driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\irrlicht2_ft.jpg"),
-        driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\irrlicht2_bk.jpg"));
+    if (sun_)
+    {
+        sun_->setPosition(irr::core::vector3df(0, 0, 0));
+        sun_->setMaterialTexture(0, driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\fire.bmp"));
+        sun_->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    }
 
+    // add earth orbit centre
+    earth_orbit_centre_ = smgr_->addEmptySceneNode(centre_);
+    if (earth_orbit_centre_)
+        earth_orbit_centre_->setPosition(irr::core::vector3df(0, 0, 0));
+
+    // add earth centre
+    earth_centre_ = smgr_->addEmptySceneNode(earth_orbit_centre_);
+    if (earth_centre_)
+        earth_centre_->setPosition(irr::core::vector3df(earth_dist, 0, 0));
+
+    // add earth
+    earth_ = smgr_->addSphereSceneNode(
+        earth_radius,    // radius
+        100,
+        earth_centre_);  // no of polys
+
+    if (earth_)
+    {
+        earth_->setPosition(irr::core::vector3df(0, 0, 0));
+        earth_->setMaterialTexture(0, driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\wall.bmp"));
+        earth_->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+    }
+
+    // add moon centre
+    moon_centre_ = smgr_->addEmptySceneNode(earth_centre_);
+    if (moon_centre_)
+        moon_centre_->setPosition(irr::core::vector3df(0, 0, 0));
+
+    // add moon
+    moon_ = smgr_->addSphereSceneNode(
+        moon_radius,   // radius
+        100,            // no of polys
+        moon_centre_); 
+
+    if (moon_)
+    {
+        moon_->setPosition(irr::core::vector3df(moon_dist, 0, 0));
+        moon_->setMaterialTexture(0, driver_->getTexture("D:\\irrlicht\\irrlicht-1.8.5\\media\\terrain-heightmap.bmp"));
+        moon_->setMaterialFlag(irr::video::EMF_LIGHTING, true);
+    }
+
+    // create light
+    irr::scene::ISceneNode* light = smgr_->addLightSceneNode(0, irr::core::vector3df(0, 0, 0),
+        irr::video::SColorf(1.0f, 0.6f, 0.7f, 1.0f), 800.0f);
+
+    // add camera
+    camera_ = smgr_->addCameraSceneNode(earth_centre_, irr::core::vector3df(0, 0, 0), irr::core::vector3df(2000, 0, 0));
+    camera_->bindTargetAndRotation(true);
+
+    timer_.reset();
     initialised_ = true;
     return true;
 }
@@ -85,21 +125,43 @@ void CSolarSystemScene::uninitialise()
 bool CSolarSystemScene::run()
 {
     if (!initialised_) return true;
+
+    // In order to do frame rate independent movement, we have to know
+    // how long it was since the last frame
+    irr::u32 then = device_->getTimer()->getTime();
+    float t = 0.0;
+
     if (device_->run())
     { 
-        driver_->beginScene(true, true, 0, videodata_);
+        irr::u32 now = device_->getTimer()->getTime();
+
+        irr::core::vector3df pos;
+        float angle;
+
+        // earth orbit
+        angle = timer_.elapsed() * 360.0f / 365.25f;
+        earth_orbit_centre_->setRotation(irr::core::vector3df(0.0f, angle, 0.0f));
+
+        // rotate earth and camera in tandem
+        angle = timer_.elapsed() * 360.0f;
+        earth_->setRotation(irr::core::vector3df(0.0f, angle, 0.0f));
+        camera_->setRotation(irr::core::vector3df(0.0f, angle, 0.0f));
+
+        // moon orbit, 28 days
+        angle = timer_.elapsed() * 360.0f / 28.0f;
+        moon_centre_->setRotation(irr::core::vector3df(0.0f, angle, 0.0f));
+
+        // rotate moon
+        moon_->setRotation(irr::core::vector3df(0.0f, angle, 0.0f));
+
+        if (receiver_.IsKeyDown(irr::KEY_ESCAPE)) return false;
+
+        driver_->beginScene(true, true, 0);
         smgr_->drawAll();
         driver_->endScene();
     }
     return true;
 }
-
-void CSolarSystemScene::setSize(int width, int height)
-{
-    if (!initialised_) return;
-    driver_->OnResize(irr::core::dimension2du(width, height));
-}
-
 
 
 
