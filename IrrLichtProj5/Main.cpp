@@ -2,13 +2,13 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 
 
-//#include <memory>
 #include <irrlicht.h>
+#include <memory>
 #include <wx/wx.h>
 
 #include "Main.h"
 #include "Scene.h"
-//#include "SolarSystemScene.h"
+#include "SolarSystemScene.h"
 
 class MyApp: public wxApp
 {
@@ -65,20 +65,21 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
                               // accordingly and prevent it from being resized
                               // to smaller size
 
+    Bind(wxEVT_CLOSE_WINDOW, &MyFrame::OnClose, this);
     Bind(wxEVT_IDLE, &MyFrame::OnIdle, this);
     Bind(wxEVT_MENU, &MyFrame::OnMenu, this);
 
- /*   userData1_ = std::make_unique<CUserEventData>(panel1_);
-    userData2_ = std::make_unique<CUserEventData>(panel2_);
+    userData1_ = new CUserEventData(panel1_);
+    userData2_ = new CUserEventData(panel2_);
 
-    panel1_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, userData1_.get()); 
-    panel2_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, userData2_.get()); 
+    panel1_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, static_cast<wxObject*>(userData1_));
+    panel2_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, static_cast<wxObject*>(userData2_));
 
-    scene1_ = std::make_unique<CScene>();
-    scene2_ = std::make_unique<CScene>();
+    scene1_ = std::make_unique<CSolarSystemScene>();
+    scene2_ = std::make_unique<CSolarSystemScene>();
 
     scene1_->initialise(panel1_->GetHWND());
-    scene2_->initialise(panel2_->GetHWND());*/
+    scene2_->initialise(panel2_->GetHWND());
 }
 
 void MyFrame::OnSize(wxSizeEvent& event)
@@ -96,13 +97,13 @@ void MyFrame::OnSize(wxSizeEvent& event)
 
 void MyFrame::OnIdle(wxIdleEvent& event)
 {
- /*   bool b1 = scene1_->run();
+    bool b1 = scene1_->run();
     bool b2 = scene2_->run();
 
     if (b1 || b2)
         event.RequestMore(true);
     else
-        this->Close();*/
+        this->Close();
 }
 
 void MyFrame::OnMenu(wxCommandEvent& event)
@@ -120,9 +121,7 @@ void MyFrame::OnMenu(wxCommandEvent& event)
 
 void MyFrame::OnExit(wxCommandEvent& event)
 {
-    //scene1_->uninitialise();
-    //scene2_->uninitialise();
-    //Close(true);
+    Close(true);
 }
 
 void MyFrame::OnAbout(wxCommandEvent& event)
@@ -134,4 +133,11 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 void MyFrame::OnHello(wxCommandEvent& event)
 {
     wxLogMessage("Hello world from wxWidgets!");
+}
+
+void MyFrame::OnClose(wxCloseEvent& event)
+{
+    scene1_->uninitialise();
+    scene2_->uninitialise();
+    event.Skip();
 }

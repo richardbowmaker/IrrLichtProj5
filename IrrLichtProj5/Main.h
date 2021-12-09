@@ -1,12 +1,10 @@
 #pragma once
 
-#include <wx/wx.h>
 #include <irrlicht.h>
+#include <memory>
+#include <wx/wx.h>
 
-//#include <memory>
-
-// #include "Scene.h"
-// #include "SolarSystemScene.h"
+#include "General.h"
 
 class MyFrame: public wxFrame
 {
@@ -19,10 +17,10 @@ private:
     void OnHello(wxCommandEvent& event);
     void OnExit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
-
     void OnMenu(wxCommandEvent& event);
     void OnIdle(wxIdleEvent& event);
     void OnSize(wxSizeEvent& event);
+    void OnClose(wxCloseEvent& event);
 
     class CUserEventData : public wxObject 
     { 
@@ -33,17 +31,22 @@ private:
             panel_ = panel; 
         } 
         wxPanel *panel_; 
+
+        ~CUserEventData()
+        {
+            panel_ = 0;
+        }
+
     }; 
 
- //   typedef std::unique_ptr<IScene> ScenePtrT;
- //   typedef std::unique_ptr<CUserEventData> CUserEventDataPtrT;
+    typedef std::unique_ptr<IScene> ScenePtrT;
 
     wxPanel *panel1_;
     wxPanel *panel2_;
-    //ScenePtrT scene1_;
-    //ScenePtrT scene2_;
-    //CUserEventDataPtrT userData1_;
-    //CUserEventDataPtrT userData2_;
+    ScenePtrT scene1_;
+    ScenePtrT scene2_;
+    CUserEventData *userData1_;
+    CUserEventData *userData2_;
  
     enum
     {

@@ -86,7 +86,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WXUSINGDLL;IRRLICHT_DIR="D:\irrlicht\irrlicht-1.8.5";WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WXUSINGDLL;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\irrlicht\irrlicht-1.8.5\include;E:\_Ricks\c++\wxWidgets\3.1.3\wxWidgets-3.1.3\lib\vc_dll\mswud;E:\_Ricks\c++\wxWidgets\3.1.3\wxWidgets-3.1.3\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -103,7 +103,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WXUSINGDLL;IRRLICHT_DIR="D:\irrlicht\irrlicht-1.8.5";WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WXUSINGDLL;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\irrlicht\irrlicht-1.8.5\include;E:\_Ricks\c++\wxWidgets\3.1.3\wxWidgets-3.1.3\lib\vc_dll\mswu;E:\_Ricks\c++\wxWidgets\3.1.3\wxWidgets-3.1.3\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -120,7 +120,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WXUSINGDLL;IRRLICHT_DIR="D:\irrlicht\irrlicht-1.8.5";_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WXUSINGDLL;_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\irrlicht\irrlicht-1.8.5\include;E:\_Ricks\c++\wxWidgets\3.1.3\wxWidgets-3.1.3\lib\vc_x64_dll\mswud;E:\_Ricks\c++\wxWidgets\3.1.3\wxWidgets-3.1.3\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -137,7 +137,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WXUSINGDLL;IRRLICHT_DIR="D:\irrlicht\irrlicht-1.8.5";NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WXUSINGDLL;_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\irrlicht\irrlicht-1.8.5\include;E:\_Ricks\c++\wxWidgets\3.1.3\wxWidgets-3.1.3\lib\vc_x64_dll\mswu;E:\_Ricks\c++\wxWidgets\3.1.3\wxWidgets-3.1.3\include</AdditionalIncludeDirectories>
     </ClCompile>

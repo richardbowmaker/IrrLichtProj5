@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include <irrlicht.h>
+//#include <irrlicht.h>
 
 class IScene
 {
