@@ -116,7 +116,7 @@ bool CSolarSystemScene::initialise(HWND hwnd)
         camera_->bindTargetAndRotation(true);
         break;
     case Above:
-        camera_ = smgr_->addCameraSceneNode(earth_centre_, irr::core::vector3df(0, 100, 0), irr::core::vector3df(0, -100, 0));
+        camera_ = smgr_->addCameraSceneNode(centre_, irr::core::vector3df(0, 100, 0), irr::core::vector3df(0, -100, 0));
         break;
     }
 
@@ -129,6 +129,7 @@ void CSolarSystemScene::uninitialise()
     if (!initialised_) return;
     device_->closeDevice();
     device_->drop();
+    initialised_ = false;
 }
 
 bool CSolarSystemScene::run(CTimer &timer)
@@ -170,6 +171,11 @@ bool CSolarSystemScene::run(CTimer &timer)
         driver_->endScene();
     }
     return true;
+}
+
+bool CSolarSystemScene::getInitialised()
+{
+    return initialised_;
 }
 
 

@@ -8,7 +8,6 @@
 
 #include "Main.h"
 #include "Scene.h"
-#include "Scene1.h"
 #include "SolarSystemScene.h"
 
 class MyApp: public wxApp
@@ -43,10 +42,10 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     CreateStatusBar();
     SetStatusText( "Welcome to wxWidgets!" );
 
-    wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer *topsizer = new wxBoxSizer( wxHORIZONTAL );
 
-    panel1_ = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(400, 400));
-    panel2_ = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(300, 300));
+    panel1_ = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(200, 100));
+    panel2_ = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(200, 100));
 
     topsizer->Add(
         panel1_,
@@ -70,36 +69,55 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     Bind(wxEVT_IDLE, &MyFrame::OnIdle, this);
     Bind(wxEVT_MENU, &MyFrame::OnMenu, this);
 
-    userData1_ = new CUserEventData(panel1_);
-    userData2_ = new CUserEventData(panel2_);
+    scene1_ = std::make_unique<CSolarSystemScene>(CSolarSystemScene::EarthSurface);
+    scene2_ = std::make_unique<CSolarSystemScene>(CSolarSystemScene::Above);
+
+    userData1_ = new CUserEventData(panel1_, scene1_.get());
+    userData2_ = new CUserEventData(panel2_, scene2_.get());
 
     panel1_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, static_cast<wxObject*>(userData1_));
     panel2_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, static_cast<wxObject*>(userData2_));
 
-    scene1_ = std::make_unique<CSolarSystemScene>(CSolarSystemScene::EarthSurface);
-    scene2_ = std::make_unique<CScene1>(CScene1::Above);
-
     scene1_->initialise(panel1_->GetHWND());
     scene2_->initialise(panel2_->GetHWND());
 
-    timer_.initialise(500.0f);
+    timer_.initialise(2500.0f);
 }
 
 void MyFrame::OnSize(wxSizeEvent& event)
 {
-    wxPanel *panel = static_cast<CUserEventData*>(event.GetEventUserData())->panel_;
-    int width, height;
+    CUserEventData *data = static_cast<CUserEventData*>(event.GetEventUserData());
 
     // keep aspect ratio 1:1
-    panel->GetClientSize(&width, &height);
+    int width, height;
+    data->panel_->GetClientSize(&width, &height);
     int s = std::min(width, height);
-    panel->SetClientSize(s, s);
-
+    if (data->size_ != s)
+    {
+        data->size_ = s;
+        data->doResize_ = true;
+    }
     event.Skip();
 }
 
 void MyFrame::OnIdle(wxIdleEvent& event)
 {
+    // if the parent window has resized then the graphics device needs to be restarted to reflact
+    // the new screen resolution
+    auto resize = [](CUserEventData &data) 
+    {
+        if (data.doResize_)
+        {
+            data.doResize_ = false;
+            data.scene_->uninitialise();
+            data.panel_->SetClientSize(data.size_, data.size_);
+            data.scene_->initialise(data.panel_->GetHWND());
+        }
+    };
+
+    resize(*userData1_);
+    resize(*userData2_);
+
     timer_.update();
     bool b1 = scene1_->run(timer_);
     bool b2 = scene2_->run(timer_);

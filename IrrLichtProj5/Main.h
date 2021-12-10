@@ -26,19 +26,20 @@ private:
     { 
     public: 
 
-        CUserEventData(wxPanel* panel) 
+        CUserEventData(wxPanel *panel, IScene *scene) 
         { 
             panel_ = panel; 
-        } 
-        wxPanel *panel_; 
-
-        ~CUserEventData()
-        {
-            panel_ = 0;
+            scene_ = scene; 
+            size_  = 0;
+            doResize_ = false;
         }
 
+        wxPanel *panel_; 
+        IScene* scene_; 
+        int size_;
+        bool doResize_;
     }; 
-
+ 
     typedef std::unique_ptr<IScene> ScenePtrT;
 
     wxPanel *panel1_;

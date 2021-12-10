@@ -15,6 +15,7 @@ public:
     virtual bool initialise(HWND hwnd);
     virtual void uninitialise();
     virtual bool run(CTimer &timer);
+    virtual bool getInitialised();
 
 private:
 

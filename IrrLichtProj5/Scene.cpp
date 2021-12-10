@@ -87,3 +87,9 @@ bool CScene::run(CTimer &timer)
     }
     return true;
 }
+
+bool CScene::getInitialised()
+{
+    return initialised_;
+}
+

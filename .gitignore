@@ -34,5 +34,8 @@
 .vs/
 
 Debug/
-
 Release/
+IrrLichtProj5/Debug/	
+IrrLichtProj5/Release/
+IrrLichtProj5/x64
+IrrLichtProj5/x86

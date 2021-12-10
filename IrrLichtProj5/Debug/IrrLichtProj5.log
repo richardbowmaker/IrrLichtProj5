@@ -1,2 +1,6 @@
-﻿  Main.cpp
+﻿  General.cpp
+  SolarSystemScene.cpp
+  Scene.cpp
+  Main.cpp
+  Generating Code...
   IrrLichtProj5.vcxproj -> D:\irrlicht\IrrLichtProj5\Debug\IrrLichtProj5.exe

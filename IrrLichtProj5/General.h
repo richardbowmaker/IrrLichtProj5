@@ -10,6 +10,7 @@ public:
     virtual bool initialise(HWND hwnd) = 0;
     virtual void uninitialise() = 0;
     virtual bool run(CTimer &timer) = 0;
+    virtual bool getInitialised() = 0;
 };
 
 class CTimer
