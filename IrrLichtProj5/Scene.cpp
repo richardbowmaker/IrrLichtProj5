@@ -76,7 +76,7 @@ void CScene::uninitialise()
     device_->drop();
 }
 
-bool CScene::run()
+bool CScene::run(CTimer &timer)
 {
     if (!initialised_) return true;
     if (device_->run())

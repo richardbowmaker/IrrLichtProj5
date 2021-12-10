@@ -1,7 +1,7 @@
 
 #pragma once
 
-//#include <irrlicht.h>
+class CTimer;
 
 class IScene
 {
@@ -9,15 +9,15 @@ public:
 
     virtual bool initialise(HWND hwnd) = 0;
     virtual void uninitialise() = 0;
-    virtual bool run() = 0;
+    virtual bool run(CTimer &timer) = 0;
 };
 
 class CTimer
 {
 public:
 
-    CTimer(float scale);
-    void reset();
+    void initialise(float scale);
+    void update();
     float elapsed();
 
 private:
@@ -25,6 +25,7 @@ private:
     double              timerFrequency_;
     unsigned __int64    startTime_;
     double              scale_;
+    float               elapsed_;
 };
 
 class EventReceiver : public irr::IEventReceiver

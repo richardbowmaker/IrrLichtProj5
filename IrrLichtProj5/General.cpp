@@ -4,30 +4,26 @@
 
 #include "General.h"
 
-
-CTimer::CTimer(float scale)
+void CTimer::initialise(float scale)
 {
-    // ratio of ms to desired interval
-    // e.g. if 1 day  = 1 sec then scale = 1000
-    //      if 10 day = 1 sec then scale = 100
-    scale_ = static_cast<double>(scale);
-    reset();
-}
-
-void CTimer::reset()
-{
+    scale_ = scale;
     unsigned __int64 freq;
     QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
     timerFrequency_ = (1.0/freq);
     QueryPerformanceCounter((LARGE_INTEGER *)&startTime_);
 }
 
-float CTimer::elapsed()
+void CTimer::update()
 {
     unsigned __int64 time;
     QueryPerformanceCounter((LARGE_INTEGER *)&time);
     double tdms = ((time - startTime_) * timerFrequency_) * 1000.0;
-    return static_cast<float>(tdms / scale_);
+    elapsed_ = static_cast<float>(tdms / scale_);
+}
+
+float CTimer::elapsed()
+{
+    return elapsed_;
 }
 
 EventReceiver::EventReceiver()

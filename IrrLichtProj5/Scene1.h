@@ -5,7 +5,7 @@
 
 #include "General.h"
 
-class CSolarSystemScene : public IScene
+class CScene1 : public IScene
 {
 public:
 
@@ -15,8 +15,8 @@ public:
         Above
     };
 
-    CSolarSystemScene(CameraViewT cameraView);
-    ~CSolarSystemScene();
+    CScene1(CameraViewT cameraView);
+    ~CScene1();
 
     virtual bool initialise(HWND hwnd);
     virtual void uninitialise();
@@ -44,4 +44,3 @@ private:
 
 
 
-//

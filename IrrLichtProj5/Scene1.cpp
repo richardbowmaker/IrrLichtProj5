@@ -3,9 +3,9 @@
 #include <Windows.h>
 
 #include "General.h"
-#include "SolarSystemScene.h"
+#include "Scene1.h"
 
-CSolarSystemScene::CSolarSystemScene(CameraViewT cameraView) : 
+CScene1::CScene1(CameraViewT cameraView) : 
     initialised_(false), 
     driverType_(irr::video::EDT_DIRECT3D9), 
     videodata_(0),
@@ -13,11 +13,11 @@ CSolarSystemScene::CSolarSystemScene(CameraViewT cameraView) :
 {
 }
 
-CSolarSystemScene::~CSolarSystemScene()
+CScene1::~CScene1()
 {
 }
 
-bool CSolarSystemScene::initialise(HWND hwnd)
+bool CScene1::initialise(HWND hwnd)
 {
     const float earth_dist = 50.0f;
     const float earth_radius = 3.0f;
@@ -124,14 +124,14 @@ bool CSolarSystemScene::initialise(HWND hwnd)
     return true;
 }
 
-void CSolarSystemScene::uninitialise()
+void CScene1::uninitialise()
 {
     if (!initialised_) return;
     device_->closeDevice();
     device_->drop();
 }
 
-bool CSolarSystemScene::run(CTimer &timer)
+bool CScene1::run(CTimer &timer)
 {
     if (!initialised_) return true;
 

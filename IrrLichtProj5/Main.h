@@ -47,7 +47,8 @@ private:
     ScenePtrT scene2_;
     CUserEventData *userData1_;
     CUserEventData *userData2_;
- 
+    CTimer timer_;
+
     enum
     {
         ID_Hello = 1

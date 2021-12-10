@@ -8,6 +8,7 @@
 
 #include "Main.h"
 #include "Scene.h"
+#include "Scene1.h"
 #include "SolarSystemScene.h"
 
 class MyApp: public wxApp
@@ -75,11 +76,13 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     panel1_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, static_cast<wxObject*>(userData1_));
     panel2_->Bind(wxEVT_SIZE, &MyFrame::OnSize, this, wxID_ANY, wxID_ANY, static_cast<wxObject*>(userData2_));
 
-    scene1_ = std::make_unique<CSolarSystemScene>();
-    scene2_ = std::make_unique<CSolarSystemScene>();
+    scene1_ = std::make_unique<CSolarSystemScene>(CSolarSystemScene::EarthSurface);
+    scene2_ = std::make_unique<CScene1>(CScene1::Above);
 
     scene1_->initialise(panel1_->GetHWND());
     scene2_->initialise(panel2_->GetHWND());
+
+    timer_.initialise(500.0f);
 }
 
 void MyFrame::OnSize(wxSizeEvent& event)
@@ -97,8 +100,9 @@ void MyFrame::OnSize(wxSizeEvent& event)
 
 void MyFrame::OnIdle(wxIdleEvent& event)
 {
-    bool b1 = scene1_->run();
-    bool b2 = scene2_->run();
+    timer_.update();
+    bool b1 = scene1_->run(timer_);
+    bool b2 = scene2_->run(timer_);
 
     if (b1 || b2)
         event.RequestMore(true);
